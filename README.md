@@ -1,6 +1,6 @@
 # Manage a Farm with Reinforcement Learning
 
-This repository contains the code and resources for the project of the course Reinforcement learning at Unimi (A.Y. 23/24).
+This repo contains the project for the course Reinforcement learning at Unimi (A.Y. 23/24).
 
 Course Instructors: Prof. Nicolò Cesa-Bianchi and Prof. Alfio Ferrara
 
