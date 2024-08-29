@@ -111,7 +111,7 @@ class FarmEnv(gym.Env):
         done = self.budget <= 0 or self.year >= self.max_years # Budget <= 0 impossible, but here in case of further improvements
 
         observation = self._get_obs()
-        reward = (self.budget - budget_t) * self.year # Reward is the delta budget multiplied by the year (next year after the action)
+        reward = (self.budget - budget_t) ** self.year # Reward is the delta budget multiplied by the year (next year after the action)
         truncated = False
         info = {}
 
