@@ -120,12 +120,25 @@ class FarmAgentMCVFA:
         else:
             available_values = [self.q(state, a).detach().numpy() for a in options]
             return options[np.argmax(available_values)]
+        
+    def greedy_policy(self, state: dict) -> int:
+        """Implements greedy strategy for action selection
+
+        Args:
+            state (tuple[int, int, bool]): state observed according to the environment
+
+        Returns:
+            int: action
+        """
+        options = self.env.unwrapped.actions_available
+        available_values = [self.q(state, a).detach().numpy() for a in options]
+        return options[np.argmax(available_values)]
 
     def generate_episode(self, max_iterations: int = 30):
         e = []
         state, info = self.env.reset()
         for i in range(max_iterations):
-            action = self.policy(state)
+            action = self.greedy_policy(state)
             s_prime, reward, terminated, truncated, info = self.env.step(action=action)
             state_as_frozenset = frozenset(state.items()) # Convert the dictionary to a frozenset of items to avoid unashable type error
             e.append((state_as_frozenset, action, (self.gamma ** (i+1)) * reward))
