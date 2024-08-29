@@ -23,6 +23,7 @@ class FarmEnv(gym.Env):
         self.storm_probability = storm_probability
         self.bought_sheep_count = 0
         self.incest_penalty = incest_penalty
+        self.sheep_reproduction_probability = 0
 
 
         # Define action and observation space
