@@ -105,16 +105,14 @@ class FarmEnv(gym.Env):
             new_sheeps = np.random.binomial(sheep_pairs_number, sheep_reproduction_probability)
             self.sheep_count += new_sheeps
 
-        # Advance year
-        self.year += 1
-
-        # Check end conditions
-        done = self.budget <= 0 or self.year >= self.max_years # Budget <= 0 impossible, but here in case of further improvements
-
         observation = self._get_obs()
-        reward = self.budget - budget_t
+        reward = (self.budget - budget_t) * self.year
         truncated = False
         info = {}
+        # Advance year
+        self.year += 1
+        # Check end conditions
+        done = self.budget <= 0 or self.year >= self.max_years # Budget <= 0 impossible, but here in case of further improvements
 
         return observation, reward, done, truncated, info
 
