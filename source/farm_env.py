@@ -31,6 +31,7 @@ class FarmEnv(gym.Env):
             "budget": spaces.Box(low=0, high=1000, shape=(1,), dtype=np.float32), # Assuming a max budget of 1 million (unit is thousands so 1000*1k = 1M)
             "sheep_count": spaces.Discrete(100),  # Assuming a max of 100 sheep
             "bought_sheep_count": spaces.Discrete(100),  # Assuming a max of 100 sheep
+            "sheep_reproduction_probability": spaces.Box(low=0, high=1, shape=(1,), dtype=np.float32),
             "year": spaces.Discrete(self.max_years + 1)  # 0 to max_years
         })
 
@@ -55,9 +56,9 @@ class FarmEnv(gym.Env):
     @property
     def features_number(self):
         n_features = len(self.observation_space.keys())
-        n_features_expanded = sum(comb(n_features + k - 1, k) for k in range(2 + 1)) # Degree 2 polynomial features expansion 
-        return n_features_expanded
-        # return n_features
+        # n_features_expanded = sum(comb(n_features + k - 1, k) for k in range(2 + 1)) # Degree 2 polynomial features expansion 
+        # return n_features_expanded
+        return n_features
 
     def reset(self, seed=None, options: dict = {}):
         super().reset(seed=seed)
@@ -99,10 +100,10 @@ class FarmEnv(gym.Env):
         if self.sheep_count > 1:
             # Use a modified, polynomial function to calculate the probability of sheep reproduction
             bought_sheep_ratio = self.bought_sheep_count / self.sheep_count
-            sheep_reproduction_probability = bought_sheep_ratio ** self.incest_penalty # x^penalty
+            self.sheep_reproduction_probability = bought_sheep_ratio ** self.incest_penalty # x^penalty
             # Number of new sheep born as a binomial B(n, p) where n=sheep_pairs_number and p=reproduction probability
             sheep_pairs_number = self.sheep_count * (self.sheep_count - 1) // 2
-            new_sheeps = np.random.binomial(sheep_pairs_number, sheep_reproduction_probability)
+            new_sheeps = np.random.binomial(sheep_pairs_number, self.sheep_reproduction_probability)
             self.sheep_count += new_sheeps
 
         # Advance year
@@ -122,6 +123,7 @@ class FarmEnv(gym.Env):
             "budget": self.budget,
             "sheep_count": self.sheep_count,
             "bought_sheep_count": self.bought_sheep_count,
+            "sheep_reproduction_probability": self.sheep_reproduction_probability,
             "year": self.year
         }
 
