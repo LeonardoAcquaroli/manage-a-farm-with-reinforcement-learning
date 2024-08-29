@@ -55,9 +55,9 @@ class FarmEnv(gym.Env):
     @property
     def features_number(self):
         n_features = len(self.observation_space.keys())
-        # n_features_expanded = sum(comb(n_features + k - 1, k) for k in range(2 + 1)) # Degree 2 polynomial features expansion 
-        # return n_features_expanded
-        return n_features
+        n_features_expanded = sum(comb(n_features + k - 1, k) for k in range(2 + 1)) # Degree 2 polynomial features expansion 
+        return n_features_expanded
+        # return n_features
 
     def reset(self, seed=None, options: dict = {}):
         super().reset(seed=seed)
