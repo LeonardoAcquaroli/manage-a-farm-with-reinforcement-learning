@@ -3,7 +3,7 @@ from gymnasium import spaces
 from gymnasium.envs.registration import register
 from typing import Literal
 import numpy as np
-from math import comb
+import math
 
 class FarmEnv(gym.Env):
     def __init__(self, initial_budget=2, sheep_cost=1, wheat_cost=0.02,
@@ -57,9 +57,13 @@ class FarmEnv(gym.Env):
     @property
     def features_number(self):
         n_features = len(self.observation_space.keys())
-        # n_features_expanded = sum(comb(n_features + k - 1, k) for k in range(2 + 1)) # Degree 2 polynomial features expansion 
+        # n_features_expanded = sum(math.comb(n_features + k - 1, k) for k in range(2 + 1)) # Degree 2 polynomial features expansion 
         # return n_features_expanded
-        return n_features
+        return n_features    
+
+    def calculate_reward(delta_budget, year, sigma=9): # sigma could be a function of years too (maybe with some regulations params not to narrow down too much the shape after year 9)
+        modifier = math.exp(-(year - 30)**2 / (2 * sigma**2))
+        return delta_budget * modifier
 
     def reset(self, seed=None, options: dict = {}):
         super().reset(seed=seed)
@@ -113,7 +117,9 @@ class FarmEnv(gym.Env):
         done = self.budget <= 0 or self.year >= self.max_years # Budget <= 0 impossible, but here in case of further improvements
 
         observation = self._get_obs()
-        reward = (self.budget - budget_t) ** self.year # Reward is the delta budget multiplied by the year (next year after the action)
+        reward = self.calculate_reward(delta_budget=(self.budget - budget_t),
+                                       year=self.year,
+                                       sigma=9)
         truncated = False
         info = {}
 
