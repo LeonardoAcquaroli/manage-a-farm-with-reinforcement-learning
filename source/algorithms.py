@@ -16,7 +16,7 @@ class FarmAgentSarsaVFA:
         self.epsilon = epsilon
         self.e_decay = epsilon_decay
         self.e_final = final_epsilon
-        self.poly = PolynomialFeatures(degree=2, include_bias=True)
+        # self.poly = PolynomialFeatures(degree=2, include_bias=True)
         self.training_error = []
         if initial_w is None:
             i_w = np.ones((self.env.action_space.n, self.env.unwrapped.features_number))
@@ -33,7 +33,7 @@ class FarmAgentSarsaVFA:
             torch.tensor: state observed by the agent in terms of state features 
         """
         features = np.array(list(state.values()))
-        features = self.poly.fit_transform(features.reshape(1, -1)).flatten()
+        # features = self.poly.fit_transform(features.reshape(1, -1)).flatten()
         return torch.tensor(features, dtype=float, requires_grad=False)
     
     def q(self, state: int, action: int) -> float:
