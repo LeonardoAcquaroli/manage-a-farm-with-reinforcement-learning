@@ -61,9 +61,9 @@ class FarmEnv(gym.Env):
         # return n_features_expanded
         return n_features    
 
-    def calculate_reward(delta_budget, year, sigma=9): # sigma could be a function of years too (maybe with some regulations params not to narrow down too much the shape after year 9)
-        modifier = math.exp(-(year - 30)**2 / (2 * sigma**2))
-        return delta_budget * modifier
+    def gaussian_reward(delta_budget, year, sigma=9): # sigma could be a function of years too (maybe with some regulations params not to narrow down too much the shape after year 9)
+        gaussian_modifier = math.exp(-(year - 30)**2 / (2 * sigma**2))
+        return delta_budget * gaussian_modifier
 
     def reset(self, seed=None, options: dict = {}):
         super().reset(seed=seed)
