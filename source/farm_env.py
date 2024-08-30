@@ -48,13 +48,13 @@ class FarmEnv(gym.Env):
         assert (self.budget <= max_budget) and (self.year <= max_year), 'Invalid state'
         
         if (self.budget >= self.sheep_cost) and (self.sheep_count < max_sheep_n) and (self.bought_sheep_count < max_bought_sheep_n):
-            return [0, 1, 2]
-            # return [0, 1]  # If you have enough money you must invest
+            # return [0, 1, 2]
+            return [0, 1]  # If you have enough money you must invest
         elif self.budget < self.wheat_cost:
             return [2]
         else:
-            return [1, 2] 
-            # return [1] # If you have enough money you must invest
+            # return [1, 2] 
+            return [1] # If you have enough money you must invest
 
     @property
     def features_number(self):
