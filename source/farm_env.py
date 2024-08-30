@@ -48,13 +48,13 @@ class FarmEnv(gym.Env):
         assert (self.budget <= max_budget) and (self.year <= max_year), 'Invalid state'
         
         if (self.budget >= self.sheep_cost) and (self.sheep_count < max_sheep_n) and (self.bought_sheep_count < max_bought_sheep_n):
-            # return [0, 1, 2] # If you have enough money you must invest
-            return [0, 1]
+            return [0, 1, 2]
+            # return [0, 1]  # If you have enough money you must invest
         elif self.budget < self.wheat_cost:
             return [2]
         else:
-            # return [1, 2] # If you have enough money you must invest
-            return [1]
+            return [1, 2] 
+            # return [1] # If you have enough money you must invest
 
     @property
     def features_number(self):
@@ -63,9 +63,9 @@ class FarmEnv(gym.Env):
         # return n_features_expanded
         return n_features    
 
-    def gaussian_reward(self, delta_budget: float, year: int, sigma: float = 9): # sigma could be a function of years too (maybe with some regulations params not to narrow down too much the shape after year 9)
+    def gaussian_reward(self, budget: float, year: int, sigma: float = 9): # sigma could be a function of years too (maybe with some regulations params not to narrow down too much the shape after year 9)
         gaussian_modifier = math.exp(-(year - 30)**2 / (2 * sigma**2))
-        return delta_budget * gaussian_modifier
+        return budget * gaussian_modifier
 
     def reset(self, seed=None, options: dict = {}):
         super().reset(seed=seed)
@@ -119,9 +119,9 @@ class FarmEnv(gym.Env):
         done = self.budget <= 0 or self.year >= self.max_years # Budget <= 0 impossible, but here in case of further improvements
 
         observation = self._get_obs()
-        reward = self.gaussian_reward(delta_budget=(self.budget - budget_t),
+        reward = self.gaussian_reward(budget=self.budget, #(self.budget - budget_t)
                                        year=self.year,
-                                       sigma=9)
+                                       sigma=2)
         truncated = False
         info = {}
 
