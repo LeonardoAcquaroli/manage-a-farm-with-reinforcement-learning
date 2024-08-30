@@ -155,10 +155,12 @@ class FarmAgentMCVFA:
         episode = self.generate_episode(max_iterations=max_iterations)
         visited = set()
         for i, (s, a, _) in enumerate(episode):
-            # Store the actions taken in each episode
+            # Statistics
+            # Store the actions taken in the episode
             if episode_number not in self.episode_actions.keys():
                 self.episode_actions[episode_number] = []
             self.episode_actions[episode_number].append(a)
+
             # Find G (substitute of the ground truth) if first visit of (s,a)
             if (s, a) not in visited:
                 visited.add((s, a))
