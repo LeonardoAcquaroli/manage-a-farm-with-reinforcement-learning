@@ -64,9 +64,9 @@ class FarmEnv(gym.Env):
         # return n_features_expanded
         return n_features    
 
-    def gaussian_reward(self, delta_budget: float, year: int, sigma: float = 9): # sigma could be a function of years too (maybe with some regulations params not to narrow down too much the shape after year 9)
+    def gaussian_reward(self, reward: float, year: int, sigma: float = 9): # sigma could be a function of years too (maybe with some regulations params not to narrow down too much the shape after year 9)
         gaussian_modifier = math.exp(-(year - 30)**2 / (2 * sigma**2))
-        return delta_budget * gaussian_modifier
+        return reward * gaussian_modifier
     
     def scale_reward(self, reward: float, range: tuple[float, float] = (-1, 1)):
         max_reward = (self.observation_space['sheep_count'].n * 10) + (self.wheat_price - self.wheat_cost) # (98*10) + (50-30) = 1001
@@ -128,8 +128,8 @@ class FarmEnv(gym.Env):
         # Get new state
         observation = self._get_obs()
         # Compute reward by 1. scaling it and 2. applying a gaussian modifier
-        reward = self.scale_reward(reward)
-        reward = self.gaussian_reward(delta_budget=(self.budget - budget_t),
+        scaled_reward = self.scale_reward(reward = (self.budget - budget_t))
+        reward = self.gaussian_reward(reward=scaled_reward,
                                        year=self.year,
                                        sigma=self.sigma)
         
