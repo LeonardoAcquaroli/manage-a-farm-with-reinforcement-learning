@@ -279,7 +279,9 @@ class FarmAgentREINFORCEAdvantage:
 
 class FarmAgentNeuralREINFORCEAdvantage:
     def __init__(self, environment, policy_learning_rate, value_learning_rate,
-                 epsilon, epsilon_decay, final_epsilon, gamma=0.99):
+                 epsilon, epsilon_decay, final_epsilon, gamma=0.99,
+                 policy_net_weights_path: str = None, value_net_weights_path: str = None):
+        
         self.env = environment
         self.gamma = gamma
         self.epsilon = epsilon
@@ -306,6 +308,12 @@ class FarmAgentNeuralREINFORCEAdvantage:
             nn.ReLU(),
             nn.Linear(64, 1)
         )
+
+        # Load models if specified
+        if policy_net_weights_path:
+            self.policy_net.load_state_dict(torch.load(policy_net_weights_path))
+        if value_net_weights_path:
+            self.value_net.load_state_dict(torch.load(value_net_weights_path))
 
         # Initialize optimizers with weight decay for L2 regularization
         self.policy_optimizer = torch.optim.Adam(self.policy_net.parameters(), lr=policy_learning_rate, weight_decay=1e-5)
@@ -336,10 +344,10 @@ class FarmAgentNeuralREINFORCEAdvantage:
         
         return np.array([normalized_state[k] for k in self.state_keys])
 
-    def policy(self, state, greedy=False):
+    def policy(self, state, greedy: bool = False):
         normalized_state = self.normalize_state(state)
         state_tensor = torch.FloatTensor(normalized_state)
-        
+
         options = self.env.unwrapped.actions_available
         if (np.random.random() > self.epsilon) or greedy:
             with torch.no_grad():
