@@ -167,7 +167,7 @@ class FarmAgentMCVFA:
                 G = sum(rw for _, _, rw in episode[i:])
                 self.R[(s, a)].append(G)
         for state, action in visited:
-            q_target = np.mean(self.R[(state, action)]) # Why the mean of each (state, action) value of R? And what is R?
+            q_target = np.mean(self.R[(state, action)])
             state = dict(state)
             q_value = self.q(state, action)
             q_error = q_target - q_value
