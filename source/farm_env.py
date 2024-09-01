@@ -64,16 +64,20 @@ class FarmEnv(gym.Env):
         # return n_features_expanded
         return n_features    
 
-    def gaussian_reward(self, reward: float, year: int, sigma: float = 9): # sigma could be a function of years too (maybe with some regulations params not to narrow down too much the shape after year 9)
-        gaussian_modifier = math.exp(-(year - 30)**2 / (2 * sigma**2))
-        return reward * gaussian_modifier
-    
     def scale_reward(self, reward: float, range: tuple[float, float] = (-1, 1)):
-        max_reward = (self.observation_space['sheep_count'].n * self.wool_price) + (self.wheat_price - self.wheat_cost) # (98*10) + (50-30) = 1001
+        # max_reward = (self.observation_space['sheep_count'].n * self.wool_price) + (self.wheat_price - self.wheat_cost) # (98*10) + (50-30) = 1001
         min_reward = -self.sheep_cost + self.wool_price - self.wool_fixed_cost # -1000 + 10 - 9 = 999
+        max_reward = -min_reward
+        # Clip reward to the range
+        reward = np.clip(reward, min_reward, max_reward)
+        # Scale reward to the range [-1, 1]
         std_reward = (reward - min_reward) / (max_reward - min_reward)
         scaled_reward = std_reward * (range[1] - range[0]) + range[0]
         return scaled_reward
+    
+    def gaussian_reward(self, reward: float, year: int, sigma: float = 9): # sigma could be a function of years too (maybe with some regulations params not to narrow down too much the shape after year 9)
+        gaussian_modifier = math.exp(-(year - 30)**2 / (2 * (sigma**2)))
+        return reward * gaussian_modifier
 
     def reset(self, seed=None, options: dict = {}):
         super().reset(seed=seed)
