@@ -1,9 +1,11 @@
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
+from torch.optim.lr_scheduler import StepLR
 import gymnasium as gym
 import numpy as np
 from collections import defaultdict
-from sklearn.preprocessing import PolynomialFeatures
+# from sklearn.preprocessing import PolynomialFeatures
 
 class FarmAgentSarsaVFA:
     """Sarsa VFA"""
@@ -289,7 +291,6 @@ class FarmAgentNeuralREINFORCEAdvantage:
         self.epsilon_decay = epsilon_decay
         self.final_epsilon = final_epsilon
 
-        # Assuming the first state we get has all the keys we need
         initial_state, _ = self.env.reset()
         self.state_keys = list(initial_state.keys())
         self.state_dim = len(self.state_keys)
@@ -299,17 +300,25 @@ class FarmAgentNeuralREINFORCEAdvantage:
         self.policy_net = nn.Sequential(
             nn.Linear(self.state_dim, 64),
             nn.ReLU(),
+            nn.Linear(64, 64),
+            nn.ReLU(),
             nn.Linear(64, self.action_dim)
         )
         self.value_net = nn.Sequential(
             nn.Linear(self.state_dim, 64),
             nn.ReLU(),
+            nn.Linear(64, 64),
+            nn.ReLU(),
             nn.Linear(64, 1)
         )
 
-        # Initialize optimizers
-        self.policy_optimizer = torch.optim.Adam(self.policy_net.parameters(), lr=policy_learning_rate)
-        self.value_optimizer = torch.optim.Adam(self.value_net.parameters(), lr=value_learning_rate)
+        # Initialize optimizers with weight decay for L2 regularization
+        self.policy_optimizer = torch.optim.Adam(self.policy_net.parameters(), lr=policy_learning_rate, weight_decay=1e-5)
+        self.value_optimizer = torch.optim.Adam(self.value_net.parameters(), lr=value_learning_rate, weight_decay=1e-5)
+
+        # Learning rate schedulers
+        self.policy_scheduler = StepLR(self.policy_optimizer, step_size=5000, gamma=0.95)
+        self.value_scheduler = StepLR(self.value_optimizer, step_size=5000, gamma=0.95)
 
         # Initialize feature normalization parameters
         self.feature_means = {k: 0 for k in self.state_keys}
@@ -317,7 +326,6 @@ class FarmAgentNeuralREINFORCEAdvantage:
         self.feature_count = 0
 
     def normalize_state(self, state):
-        # Online normalization of state features
         self.feature_count += 1
         normalized_state = {}
         for k in self.state_keys:
@@ -341,7 +349,7 @@ class FarmAgentNeuralREINFORCEAdvantage:
         if (np.random.random() > self.epsilon) or greedy:
             with torch.no_grad():
                 action_scores = self.policy_net(state_tensor)
-                action_probs = torch.softmax(action_scores, dim=0)
+                action_probs = F.softmax(action_scores, dim=0)
             return options[torch.argmax(action_probs[options]).item()]
         else:
             return np.random.choice(options)
@@ -356,25 +364,35 @@ class FarmAgentNeuralREINFORCEAdvantage:
         # Compute value estimates
         values = self.value_net(normalized_states).squeeze()
         
-        # Compute advantages
+        # Compute advantages with normalization
         advantages = returns - values.detach()
+        advantages = (advantages - advantages.mean()) / (advantages.std() + 1e-8)
         
         # Update policy
-        action_probs = torch.softmax(self.policy_net(normalized_states), dim=1)
+        action_probs = F.softmax(self.policy_net(normalized_states), dim=1)
         selected_probs = action_probs[range(len(actions)), actions]
-        policy_loss = -(torch.log(selected_probs) * advantages).mean()
+        policy_loss = -(torch.log(selected_probs + 1e-8) * advantages).mean()
         
         self.policy_optimizer.zero_grad()
         policy_loss.backward()
-        nn.utils.clip_grad_norm_(self.policy_net.parameters(), max_norm=1.0)
+        nn.utils.clip_grad_norm_(self.policy_net.parameters(), max_norm=0.5)
         self.policy_optimizer.step()
         
         # Update value function
-        value_loss = nn.MSELoss()(values, returns)
+        value_loss = F.mse_loss(values, returns)
         self.value_optimizer.zero_grad()
         value_loss.backward()
-        nn.utils.clip_grad_norm_(self.value_net.parameters(), max_norm=1.0)
+        nn.utils.clip_grad_norm_(self.value_net.parameters(), max_norm=0.5)
         self.value_optimizer.step()
+
+        # Step the learning rate schedulers
+        self.policy_scheduler.step()
+        self.value_scheduler.step()
+
+        # Check for NaN values
+        if torch.isnan(self.policy_net[0].weight).any() or torch.isnan(self.value_net[0].weight).any():
+            print(f"NaN detected in weights at episode {episode_number}")
+            self.reset_weights()
 
     def generate_episode(self, max_iterations):
         episode = []
@@ -398,3 +416,13 @@ class FarmAgentNeuralREINFORCEAdvantage:
 
     def decay_epsilon(self):
         self.epsilon = max(self.final_epsilon, self.epsilon - self.epsilon_decay)
+
+    def reset_weights(self):
+        def init_weights(m):
+            if isinstance(m, nn.Linear):
+                nn.init.xavier_uniform_(m.weight)
+                m.bias.data.fill_(0.01)
+
+        self.policy_net.apply(init_weights)
+        self.value_net.apply(init_weights)
+        print("Weights have been reset due to NaN values.")
