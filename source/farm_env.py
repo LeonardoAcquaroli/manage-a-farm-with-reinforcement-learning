@@ -112,7 +112,7 @@ class FarmEnv(gym.Env):
         self.budget += wool_income + wheat_income
         
         # Sheep reproduction
-        if self.sheep_count > 1:
+        if (self.sheep_count > 1) and (self.sheep_count <= self.observation_space['sheep_count'].n):
             # Use a modified, polynomial function to calculate the probability of sheep reproduction
             bought_sheep_ratio = self.bought_sheep_count / self.sheep_count
             self.sheep_reproduction_probability = bought_sheep_ratio ** self.incest_penalty # x^penalty
