@@ -1,4 +1,5 @@
 import torch
+import torch.nn as nn
 import gymnasium as gym
 import numpy as np
 from collections import defaultdict
@@ -39,7 +40,7 @@ class FarmAgentSarsaVFA:
     def q(self, state: int, action: int) -> float:
         return self.x(state) @ self.w[action, :]
     
-    def policy(self, state: int) -> int:
+    def policy(self, state: int, greedy) -> int:
         """Implements e-greedy strategy for action selection
 
         Args:
@@ -49,11 +50,11 @@ class FarmAgentSarsaVFA:
             int: action
         """
         options = self.env.unwrapped.actions_available
-        if np.random.random() < self.epsilon:
-            return np.random.choice(options)
-        else:
+        if (np.random.random() > self.epsilon) or greedy:
             available_values = [self.q(state, a).detach().numpy() for a in options]
             return options[np.argmax(available_values)]
+        else:
+            return np.random.choice(options)
 
     def update(self, state: int, action: int, reward: float, s_prime: int):
         next_action = self.policy(state)
@@ -106,7 +107,7 @@ class FarmAgentMCVFA:
     def q(self, state: int, action: int) -> float:
         return self.x(state) @ self.w[action, :]
         
-    def policy(self, state: dict) -> int:
+    def policy(self, state: int, greedy) -> int:
         """Implements e-greedy strategy for action selection
 
         Args:
@@ -116,24 +117,11 @@ class FarmAgentMCVFA:
             int: action
         """
         options = self.env.unwrapped.actions_available
-        if np.random.random() < self.epsilon:
-            return np.random.choice(options)
-        else:
+        if (np.random.random() > self.epsilon) or greedy:
             available_values = [self.q(state, a).detach().numpy() for a in options]
             return options[np.argmax(available_values)]
-        
-    def greedy_policy(self, state: dict) -> int:
-        """Implements greedy strategy for action selection
-
-        Args:
-            state (tuple[int, int, bool]): state observed according to the environment
-
-        Returns:
-            int: action
-        """
-        options = self.env.unwrapped.actions_available
-        available_values = [self.q(state, a).detach().numpy() for a in options]
-        return options[np.argmax(available_values)]
+        else:
+            return np.random.choice(options)
 
     def generate_episode(self, max_iterations: int = 30):
         e = []
@@ -180,11 +168,6 @@ class FarmAgentMCVFA:
     def decay_epsilon(self):
         self.epsilon = max(self.e_final, self.epsilon - self.e_decay)
 
-import torch
-import gymnasium as gym
-import numpy as np
-from collections import defaultdict
-
 class FarmAgentREINFORCEAdvantage:
     def __init__(self, environment: gym.Env, policy_learning_rate: float, value_learning_rate: float,
                  epsilon: float, epsilon_decay: float, final_epsilon: float,
@@ -230,6 +213,11 @@ class FarmAgentREINFORCEAdvantage:
             available_action_weights = self.policy_w[options, :]
             action_scores = available_action_weights @ state_features
             action_probs = torch.softmax(action_scores, dim=0)
+            print(f'''WEIGHTS: {available_action_weights}\n
+                  state_features: {state_features}\n
+                  options: {options}\n
+                  action_scores: {action_scores}\n
+                  action_probs: {action_probs}''')
             return options[np.random.choice(len(options), p=action_probs.detach().numpy())]
     
     def value(self, state: dict) -> float:
@@ -291,3 +279,122 @@ class FarmAgentREINFORCEAdvantage:
     
     def decay_epsilon(self):
         self.epsilon = max(self.e_final, self.epsilon - self.e_decay)
+
+class FarmAgentNeuralREINFORCEAdvantage:
+    def __init__(self, environment, policy_learning_rate, value_learning_rate,
+                 epsilon, epsilon_decay, final_epsilon, gamma=0.99):
+        self.env = environment
+        self.gamma = gamma
+        self.epsilon = epsilon
+        self.epsilon_decay = epsilon_decay
+        self.final_epsilon = final_epsilon
+
+        # Assuming the first state we get has all the keys we need
+        initial_state, _ = self.env.reset()
+        self.state_keys = list(initial_state.keys())
+        self.state_dim = len(self.state_keys)
+        self.action_dim = self.env.action_space.n
+
+        # Initialize policy and value networks
+        self.policy_net = nn.Sequential(
+            nn.Linear(self.state_dim, 64),
+            nn.ReLU(),
+            nn.Linear(64, self.action_dim)
+        )
+        self.value_net = nn.Sequential(
+            nn.Linear(self.state_dim, 64),
+            nn.ReLU(),
+            nn.Linear(64, 1)
+        )
+
+        # Initialize optimizers
+        self.policy_optimizer = torch.optim.Adam(self.policy_net.parameters(), lr=policy_learning_rate)
+        self.value_optimizer = torch.optim.Adam(self.value_net.parameters(), lr=value_learning_rate)
+
+        # Initialize feature normalization parameters
+        self.feature_means = {k: 0 for k in self.state_keys}
+        self.feature_stds = {k: 1 for k in self.state_keys}
+        self.feature_count = 0
+
+    def normalize_state(self, state):
+        # Online normalization of state features
+        self.feature_count += 1
+        normalized_state = {}
+        for k in self.state_keys:
+            delta = state[k] - self.feature_means[k]
+            self.feature_means[k] += delta / self.feature_count
+            delta2 = state[k] - self.feature_means[k]
+            self.feature_stds[k] += delta * delta2
+
+            if self.feature_count > 1:
+                normalized_state[k] = (state[k] - self.feature_means[k]) / (np.sqrt(self.feature_stds[k] / (self.feature_count - 1)) + 1e-8)
+            else:
+                normalized_state[k] = state[k]
+        
+        return np.array([normalized_state[k] for k in self.state_keys])
+
+    def policy(self, state, greedy=False):
+        normalized_state = self.normalize_state(state)
+        state_tensor = torch.FloatTensor(normalized_state)
+        
+        options = self.env.unwrapped.actions_available
+        if (np.random.random() > self.epsilon) or greedy:
+            with torch.no_grad():
+                action_scores = self.policy_net(state_tensor)
+                action_probs = torch.softmax(action_scores, dim=0)
+            return options[torch.argmax(action_probs[options]).item()]
+        else:
+            return np.random.choice(options)
+
+    def update(self, episode_number, max_iterations=30):
+        episode = self.generate_episode(max_iterations)
+        states, actions, rewards = zip(*episode)
+        
+        normalized_states = torch.FloatTensor([self.normalize_state(s) for s in states])
+        returns = self.compute_returns(rewards)
+        
+        # Compute value estimates
+        values = self.value_net(normalized_states).squeeze()
+        
+        # Compute advantages
+        advantages = returns - values.detach()
+        
+        # Update policy
+        action_probs = torch.softmax(self.policy_net(normalized_states), dim=1)
+        selected_probs = action_probs[range(len(actions)), actions]
+        policy_loss = -(torch.log(selected_probs) * advantages).mean()
+        
+        self.policy_optimizer.zero_grad()
+        policy_loss.backward()
+        nn.utils.clip_grad_norm_(self.policy_net.parameters(), max_norm=1.0)
+        self.policy_optimizer.step()
+        
+        # Update value function
+        value_loss = nn.MSELoss()(values, returns)
+        self.value_optimizer.zero_grad()
+        value_loss.backward()
+        nn.utils.clip_grad_norm_(self.value_net.parameters(), max_norm=1.0)
+        self.value_optimizer.step()
+
+    def generate_episode(self, max_iterations):
+        episode = []
+        state, _ = self.env.reset()
+        for _ in range(max_iterations):
+            action = self.policy(state)
+            next_state, reward, done, _, _ = self.env.step(action)
+            episode.append((state, action, reward))
+            if done:
+                break
+            state = next_state
+        return episode
+
+    def compute_returns(self, rewards):
+        returns = []
+        G = 0
+        for r in reversed(rewards):
+            G = r + self.gamma * G
+            returns.insert(0, G)
+        return torch.FloatTensor(returns)
+
+    def decay_epsilon(self):
+        self.epsilon = max(self.final_epsilon, self.epsilon - self.epsilon_decay)
