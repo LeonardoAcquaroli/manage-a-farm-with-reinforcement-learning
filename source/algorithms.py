@@ -218,15 +218,19 @@ class FarmAgentREINFORCEAdvantage:
         features = np.array(list(state.values()), dtype=np.float32)
         return torch.tensor(features, dtype=torch.float32, requires_grad=True)
     
-    def policy(self, state: dict) -> int:
+    def policy(self, state):
         """Implements e-greedy strategy for action selection"""
         options = self.env.unwrapped.actions_available
+        
         if np.random.random() < self.epsilon:
             return np.random.choice(options)
         else:
             state_features = self.x(state)
-            action_probs = torch.softmax(self.policy_w @ state_features, dim=0)
-            return np.random.choice(options, p=action_probs.detach().numpy())
+            # Only consider the rows of policy_w corresponding to available actions
+            available_action_weights = self.policy_w[options, :]
+            action_scores = available_action_weights @ state_features
+            action_probs = torch.softmax(action_scores, dim=0)
+            return options[np.random.choice(len(options), p=action_probs.detach().numpy())]
     
     def value(self, state: dict) -> float:
         """Estimates the value of a state"""
