@@ -215,11 +215,6 @@ class FarmAgentREINFORCEAdvantage:
             available_action_weights = self.policy_w[options, :]
             action_scores = available_action_weights @ state_features
             action_probs = torch.softmax(action_scores, dim=0)
-            print(f'''WEIGHTS: {available_action_weights}\n
-                  state_features: {state_features}\n
-                  options: {options}\n
-                  action_scores: {action_scores}\n
-                  action_probs: {action_probs}''')
             return options[np.random.choice(len(options), p=action_probs.detach().numpy())]
     
     def value(self, state: dict) -> float:
