@@ -186,7 +186,6 @@ import numpy as np
 from collections import defaultdict
 
 class FarmAgentREINFORCEAdvantage:
-    """REINFORCE with Advantage"""
     def __init__(self, environment: gym.Env, policy_learning_rate: float, value_learning_rate: float,
                  epsilon: float, epsilon_decay: float, final_epsilon: float,
                  gamma: float = 0.99, initial_policy_w: np.ndarray = None, initial_value_w: np.ndarray = None) -> None:
@@ -203,20 +202,20 @@ class FarmAgentREINFORCEAdvantage:
             i_policy_w = np.ones((self.env.action_space.n, self.env.unwrapped.features_number))
         else:
             i_policy_w = initial_policy_w
-        self.policy_w = torch.tensor(i_policy_w, dtype=float, requires_grad=True)
+        self.policy_w = torch.tensor(i_policy_w, dtype=torch.float32, requires_grad=True)
         
         if initial_value_w is None:
             i_value_w = np.ones(self.env.unwrapped.features_number)
         else:
             i_value_w = initial_value_w
-        self.value_w = torch.tensor(i_value_w, dtype=float, requires_grad=True)
+        self.value_w = torch.tensor(i_value_w, dtype=torch.float32, requires_grad=True)
         
         self.policy_optimizer = torch.optim.Adam([self.policy_w], lr=self.policy_alpha)
         self.value_optimizer = torch.optim.Adam([self.value_w], lr=self.value_alpha)
     
     def x(self, state: dict) -> torch.Tensor:
         """Returns the features that represent the state"""
-        features = np.array(list(state.values()))
+        features = np.array(list(state.values()), dtype=np.float32)
         return torch.tensor(features, dtype=torch.float32, requires_grad=True)
     
     def policy(self, state: dict) -> int:
@@ -246,7 +245,6 @@ class FarmAgentREINFORCEAdvantage:
             state = s_prime
         return episode
     
-
     def update(self, episode_number: int, max_iterations: int = 30):
         """REINFORCE with Advantage update rule"""
         episode = self.generate_episode(max_iterations=max_iterations)
