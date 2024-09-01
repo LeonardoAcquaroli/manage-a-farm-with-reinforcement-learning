@@ -1,0 +1,118 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="300" viewBox="0 0 800 300">
+  <style>
+    text { font-family: Arial, sans-serif; font-size: 12px; fill: #333; }
+    .title { font-size: 16px; font-weight: bold; }
+    .layer-label { font-size: 10px; }
+  </style>
+  
+  <!-- Policy Network -->
+  <text x="400" y="30" text-anchor="middle" class="title">Policy Network</text>
+  
+  <!-- Connections (drawn first to be in background) -->
+  <g opacity="0.2">
+    <!-- Layer 1 to 2 -->
+    <line x1="95" y1="80" x2="205" y2="80" stroke="#000" />
+    <line x1="95" y1="80" x2="205" y2="120" stroke="#000" />
+    <line x1="95" y1="80" x2="205" y2="160" stroke="#000" />
+    <line x1="95" y1="80" x2="205" y2="200" stroke="#000" />
+    <line x1="95" y1="120" x2="205" y2="80" stroke="#000" />
+    <line x1="95" y1="120" x2="205" y2="120" stroke="#000" />
+    <line x1="95" y1="120" x2="205" y2="160" stroke="#000" />
+    <line x1="95" y1="120" x2="205" y2="200" stroke="#000" />
+    <line x1="95" y1="160" x2="205" y2="80" stroke="#000" />
+    <line x1="95" y1="160" x2="205" y2="120" stroke="#000" />
+    <line x1="95" y1="160" x2="205" y2="160" stroke="#000" />
+    <line x1="95" y1="160" x2="205" y2="200" stroke="#000" />
+    <line x1="95" y1="200" x2="205" y2="80" stroke="#000" />
+    <line x1="95" y1="200" x2="205" y2="120" stroke="#000" />
+    <line x1="95" y1="200" x2="205" y2="160" stroke="#000" />
+    <line x1="95" y1="200" x2="205" y2="200" stroke="#000" />
+    
+    <!-- Layer 2 to 3 -->
+    <line x1="235" y1="80" x2="345" y2="80" stroke="#000" />
+    <line x1="235" y1="80" x2="345" y2="120" stroke="#000" />
+    <line x1="235" y1="80" x2="345" y2="160" stroke="#000" />
+    <line x1="235" y1="80" x2="345" y2="200" stroke="#000" />
+    <line x1="235" y1="120" x2="345" y2="80" stroke="#000" />
+    <line x1="235" y1="120" x2="345" y2="120" stroke="#000" />
+    <line x1="235" y1="120" x2="345" y2="160" stroke="#000" />
+    <line x1="235" y1="120" x2="345" y2="200" stroke="#000" />
+    <line x1="235" y1="160" x2="345" y2="80" stroke="#000" />
+    <line x1="235" y1="160" x2="345" y2="120" stroke="#000" />
+    <line x1="235" y1="160" x2="345" y2="160" stroke="#000" />
+    <line x1="235" y1="160" x2="345" y2="200" stroke="#000" />
+    <line x1="235" y1="200" x2="345" y2="80" stroke="#000" />
+    <line x1="235" y1="200" x2="345" y2="120" stroke="#000" />
+    <line x1="235" y1="200" x2="345" y2="160" stroke="#000" />
+    <line x1="235" y1="200" x2="345" y2="200" stroke="#000" />
+    
+    <!-- Layer 3 to Output -->
+    <line x1="375" y1="80" x2="485" y2="90" stroke="#000" />
+    <line x1="375" y1="80" x2="485" y2="140" stroke="#000" />
+    <line x1="375" y1="80" x2="485" y2="190" stroke="#000" />
+    <line x1="375" y1="120" x2="485" y2="90" stroke="#000" />
+    <line x1="375" y1="120" x2="485" y2="140" stroke="#000" />
+    <line x1="375" y1="120" x2="485" y2="190" stroke="#000" />
+    <line x1="375" y1="160" x2="485" y2="90" stroke="#000" />
+    <line x1="375" y1="160" x2="485" y2="140" stroke="#000" />
+    <line x1="375" y1="160" x2="485" y2="190" stroke="#000" />
+    <line x1="375" y1="200" x2="485" y2="90" stroke="#000" />
+    <line x1="375" y1="200" x2="485" y2="140" stroke="#000" />
+    <line x1="375" y1="200" x2="485" y2="190" stroke="#000" />
+  </g>
+  
+  <!-- Input Layer -->
+  <circle cx="80" cy="80" r="15" fill="#436c00" />
+  <circle cx="80" cy="120" r="15" fill="#436c00" />
+  <circle cx="80" cy="160" r="15" fill="#436c00" />
+  <circle cx="80" cy="200" r="15" fill="#436c00" />
+  <text x="80" y="230" text-anchor="middle">Input Layer</text>
+  <text x="80" y="245" text-anchor="middle" class="layer-label">(state_dim)</text>
+  
+  <!-- First Hidden Layer -->
+  <circle cx="220" cy="80" r="15" fill="#629a00" />
+  <circle cx="220" cy="120" r="15" fill="#629a00" />
+  <circle cx="220" cy="160" r="15" fill="#629a00" />
+  <circle cx="220" cy="200" r="15" fill="#629a00" />
+  <text x="220" y="230" text-anchor="middle">Hidden Layer 1</text>
+  <text x="220" y="245" text-anchor="middle" class="layer-label">(64)</text>
+  
+  <!-- Second Hidden Layer -->
+  <circle cx="360" cy="80" r="15" fill="#73ad00" />
+  <circle cx="360" cy="120" r="15" fill="#73ad00" />
+  <circle cx="360" cy="160" r="15" fill="#73ad00" />
+  <circle cx="360" cy="200" r="15" fill="#73ad00" />
+  <text x="360" y="230" text-anchor="middle">Hidden Layer 2</text>
+  <text x="360" y="245" text-anchor="middle" class="layer-label">(64)</text>
+  
+  <!-- Output Layer -->
+  <circle cx="500" cy="90" r="15" fill="#acc700" />
+  <circle cx="500" cy="140" r="15" fill="#acc700" />
+  <circle cx="500" cy="190" r="15" fill="#acc700" />
+  <text x="500" y="230" text-anchor="middle">Output Layer</text>
+  <text x="500" y="245" text-anchor="middle" class="layer-label">(3 actions)</text>
+  
+  <!-- ReLU 1 (in foreground with white background) -->
+  <svg x="120" y="110" width="60" height="60" viewBox="0 0 200 100">
+    <rect width="200" height="100" fill="white"/>
+    <line x1="0" y1="100" x2="200" y2="100" stroke="#D3D3D3" stroke-opacity="0.5" />
+    <line x1="100" y1="0" x2="100" y2="100" stroke="#D3D3D3" stroke-opacity="0.5" />
+    <path d="M 0 100 L 100 100 L 200 0" stroke="#ee5c59" stroke-width="2" fill="none" />
+  </svg>
+  
+  <!-- ReLU 2 (in foreground with white background) -->
+  <svg x="260" y="110" width="60" height="60" viewBox="0 0 200 100">
+    <rect width="200" height="100" fill="white"/>
+    <line x1="0" y1="100" x2="200" y2="100" stroke="#D3D3D3" stroke-opacity="0.5" />
+    <line x1="100" y1="0" x2="100" y2="100" stroke="#D3D3D3" stroke-opacity="0.5" />
+    <path d="M 0 100 L 100 100 L 200 0" stroke="#ee5c59" stroke-width="2" fill="none" />
+  </svg>
+  
+  <!-- ReLU 3 (in foreground with white background) -->
+  <svg x="400" y="110" width="60" height="60" viewBox="0 0 200 100">
+    <rect width="200" height="100" fill="white"/>
+    <line x1="0" y1="100" x2="200" y2="100" stroke="#D3D3D3" stroke-opacity="0.5" />
+    <line x1="100" y1="0" x2="100" y2="100" stroke="#D3D3D3" stroke-opacity="0.5" />
+    <path d="M 0 100 L 100 100 L 200 0" stroke="#ee5c59" stroke-width="2" fill="none" />
+  </svg>
+</svg>
