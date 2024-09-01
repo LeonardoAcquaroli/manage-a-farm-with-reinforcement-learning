@@ -217,7 +217,7 @@ class FarmAgentREINFORCEAdvantage:
     def x(self, state: dict) -> torch.Tensor:
         """Returns the features that represent the state"""
         features = np.array(list(state.values()))
-        return torch.tensor(features, dtype=float)
+        return torch.tensor(features, dtype=torch.float32, requires_grad=True)
     
     def policy(self, state: dict) -> int:
         """Implements e-greedy strategy for action selection"""
@@ -246,6 +246,7 @@ class FarmAgentREINFORCEAdvantage:
             state = s_prime
         return episode
     
+
     def update(self, episode_number: int, max_iterations: int = 30):
         """REINFORCE with Advantage update rule"""
         episode = self.generate_episode(max_iterations=max_iterations)
@@ -258,24 +259,25 @@ class FarmAgentREINFORCEAdvantage:
         for r in reversed(rewards):
             G = r + self.gamma * G
             returns.insert(0, G)
-        returns = torch.tensor(returns)
+        returns = torch.tensor(returns, dtype=torch.float32, requires_grad=True)
         
         # Calculate state values
-        state_values = torch.tensor([self.value(s) for s in states])
+        state_values = torch.stack([self.value(s) for s in states])
         
         # Calculate advantages
-        advantages = returns - state_values
+        advantages = returns - state_values.detach()  # Detach state_values to avoid computing gradients through it
         
         # Update policy
+        policy_loss = 0
         for t, (state, action) in enumerate(zip(states, actions)):
             state_features = self.x(state)
             action_probs = torch.softmax(self.policy_w @ state_features, dim=0)
             log_prob = torch.log(action_probs[action])
-            policy_loss = -log_prob * advantages[t]
-            
-            self.policy_optimizer.zero_grad()
-            policy_loss.backward()
-            self.policy_optimizer.step()
+            policy_loss += -log_prob * advantages[t]
+        
+        self.policy_optimizer.zero_grad()
+        policy_loss.backward()
+        self.policy_optimizer.step()
         
         # Update value function
         value_loss = torch.mean((returns - state_values) ** 2)
