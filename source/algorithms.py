@@ -179,3 +179,111 @@ class FarmAgentMCVFA:
     
     def decay_epsilon(self):
         self.epsilon = max(self.e_final, self.epsilon - self.e_decay)
+
+import torch
+import gymnasium as gym
+import numpy as np
+from collections import defaultdict
+
+class FarmAgentREINFORCEAdvantage:
+    """REINFORCE with Advantage"""
+    def __init__(self, environment: gym.Env, policy_learning_rate: float, value_learning_rate: float,
+                 epsilon: float, epsilon_decay: float, final_epsilon: float,
+                 gamma: float = 0.99, initial_policy_w: np.ndarray = None, initial_value_w: np.ndarray = None) -> None:
+        self.env = environment
+        self.policy_alpha = policy_learning_rate
+        self.value_alpha = value_learning_rate
+        self.gamma = gamma
+        self.epsilon = epsilon
+        self.e_decay = epsilon_decay
+        self.e_final = final_epsilon
+        self.training_error = []
+        
+        if initial_policy_w is None:
+            i_policy_w = np.ones((self.env.action_space.n, self.env.unwrapped.features_number))
+        else:
+            i_policy_w = initial_policy_w
+        self.policy_w = torch.tensor(i_policy_w, dtype=float, requires_grad=True)
+        
+        if initial_value_w is None:
+            i_value_w = np.ones(self.env.unwrapped.features_number)
+        else:
+            i_value_w = initial_value_w
+        self.value_w = torch.tensor(i_value_w, dtype=float, requires_grad=True)
+        
+        self.policy_optimizer = torch.optim.Adam([self.policy_w], lr=self.policy_alpha)
+        self.value_optimizer = torch.optim.Adam([self.value_w], lr=self.value_alpha)
+    
+    def x(self, state: dict) -> torch.Tensor:
+        """Returns the features that represent the state"""
+        features = np.array(list(state.values()))
+        return torch.tensor(features, dtype=float)
+    
+    def policy(self, state: dict) -> int:
+        """Implements e-greedy strategy for action selection"""
+        options = self.env.unwrapped.actions_available
+        if np.random.random() < self.epsilon:
+            return np.random.choice(options)
+        else:
+            state_features = self.x(state)
+            action_probs = torch.softmax(self.policy_w @ state_features, dim=0)
+            return np.random.choice(options, p=action_probs.detach().numpy())
+    
+    def value(self, state: dict) -> float:
+        """Estimates the value of a state"""
+        state_features = self.x(state)
+        return torch.dot(self.value_w, state_features)
+    
+    def generate_episode(self, max_iterations: int = 30):
+        episode = []
+        state, info = self.env.reset()
+        for _ in range(max_iterations):
+            action = self.policy(state)
+            s_prime, reward, terminated, truncated, info = self.env.step(action=action)
+            episode.append((state, action, reward))
+            if terminated or truncated:
+                break
+            state = s_prime
+        return episode
+    
+    def update(self, episode_number: int, max_iterations: int = 30):
+        """REINFORCE with Advantage update rule"""
+        episode = self.generate_episode(max_iterations=max_iterations)
+        
+        states, actions, rewards = zip(*episode)
+        
+        # Calculate returns
+        returns = []
+        G = 0
+        for r in reversed(rewards):
+            G = r + self.gamma * G
+            returns.insert(0, G)
+        returns = torch.tensor(returns)
+        
+        # Calculate state values
+        state_values = torch.tensor([self.value(s) for s in states])
+        
+        # Calculate advantages
+        advantages = returns - state_values
+        
+        # Update policy
+        for t, (state, action) in enumerate(zip(states, actions)):
+            state_features = self.x(state)
+            action_probs = torch.softmax(self.policy_w @ state_features, dim=0)
+            log_prob = torch.log(action_probs[action])
+            policy_loss = -log_prob * advantages[t]
+            
+            self.policy_optimizer.zero_grad()
+            policy_loss.backward()
+            self.policy_optimizer.step()
+        
+        # Update value function
+        value_loss = torch.mean((returns - state_values) ** 2)
+        self.value_optimizer.zero_grad()
+        value_loss.backward()
+        self.value_optimizer.step()
+        
+        self.training_error.append(value_loss.item())
+    
+    def decay_epsilon(self):
+        self.epsilon = max(self.e_final, self.epsilon - self.e_decay)
