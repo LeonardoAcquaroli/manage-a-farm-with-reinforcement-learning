@@ -112,14 +112,16 @@ class FarmEnv(gym.Env):
         self.budget += wool_income + wheat_income
         
         # Sheep reproduction
-        if (self.sheep_count > 1) and (self.sheep_count <= self.observation_space['sheep_count'].n):
+        if (self.sheep_count > 1) and (self.sheep_count < self.observation_space['sheep_count'].n):
             # Use a modified, polynomial function to calculate the probability of sheep reproduction
             bought_sheep_ratio = self.bought_sheep_count / self.sheep_count
             self.sheep_reproduction_probability = bought_sheep_ratio ** self.incest_penalty # x^penalty
             # Number of new sheep born as a binomial B(n, p) where n=sheep_pairs_number and p=reproduction probability
             sheep_pairs_number = self.sheep_count * (self.sheep_count - 1) // 2
             new_sheeps = np.random.binomial(sheep_pairs_number, self.sheep_reproduction_probability)
-            self.sheep_count += new_sheeps
+            
+            # Update sheep count clipping it to 98 if it goes over
+            self.sheep_count = min(self.sheep_count + new_sheeps, self.observation_space['sheep_count'].n)
 
         # Advance year
         self.year += 1
