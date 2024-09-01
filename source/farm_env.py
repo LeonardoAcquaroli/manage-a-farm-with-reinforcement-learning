@@ -9,7 +9,7 @@ class FarmEnv(gym.Env):
     def __init__(self, initial_budget=2, sheep_cost=1, wheat_cost=0.02,
                  wool_price=0.01, wheat_price=0.05,
                  max_years=30, wool_fixed_cost=0.009,
-                 storm_probability=0.1, incest_penalty: Literal[2,3,4,5] = 3):
+                 storm_probability=0.1, incest_penalty: Literal[2,3,4,5] = 3, reward_std: float = 9):
         super(FarmEnv, self).__init__()
 
         # Environment parameters
@@ -24,14 +24,15 @@ class FarmEnv(gym.Env):
         self.bought_sheep_count = 0
         self.incest_penalty = incest_penalty
         self.sheep_reproduction_probability = 0
+        self.sigma = reward_std
 
 
         # Define action and observation space
         self.action_space = spaces.Discrete(3)  # 0: buy sheep, 1: grow wheat, 2: do not invest
         self.observation_space = spaces.Dict({
             "budget": spaces.Box(low=0, high=1000, shape=(1,), dtype=np.float32), # Assuming a max budget of 1 million (unit is thousands so 1000*1k = 1M)
-            "sheep_count": spaces.Discrete(100),  # Assuming a max of 100 sheep
-            "bought_sheep_count": spaces.Discrete(100),  # Assuming a max of 100 sheep
+            "sheep_count": spaces.Discrete(98),  # Assuming a max of 98 sheep. Not 100 because of reward scaling with min=-999 and max=1001.
+            "bought_sheep_count": spaces.Discrete(98),  # Assuming a max of 98 sheep. Not 100 because of reward scaling with min=-999 and max=1001.
             "sheep_reproduction_probability": spaces.Box(low=0, high=1, shape=(1,), dtype=np.float32),
             "year": spaces.Discrete(self.max_years + 1)  # 0 to max_years
         })
@@ -63,9 +64,16 @@ class FarmEnv(gym.Env):
         # return n_features_expanded
         return n_features    
 
-    def gaussian_reward(self, budget: float, year: int, sigma: float = 9): # sigma could be a function of years too (maybe with some regulations params not to narrow down too much the shape after year 9)
+    def gaussian_reward(self, delta_budget: float, year: int, sigma: float = 9): # sigma could be a function of years too (maybe with some regulations params not to narrow down too much the shape after year 9)
         gaussian_modifier = math.exp(-(year - 30)**2 / (2 * sigma**2))
-        return budget * gaussian_modifier
+        return delta_budget * gaussian_modifier
+    
+    def scale_reward(self, reward: float, range: tuple[float, float] = (-1, 1)):
+        max_reward = (self.observation_space['sheep_count'].n * 10) + (self.wheat_price - self.wheat_cost) # (98*10) + (50-30) = 1001
+        min_reward = -self.sheep_cost + self.wool_price - self.wool_fixed_cost # -1000 + 10 - 9 = 999
+        std_reward = (reward - min_reward) / (max_reward - min_reward)
+        scaled_reward = std_reward * (range[1] - range[0]) + range[0]
+        return scaled_reward
 
     def reset(self, seed=None, options: dict = {}):
         super().reset(seed=seed)
@@ -117,11 +125,14 @@ class FarmEnv(gym.Env):
         self.year += 1
         # Check end conditions
         done = self.budget <= 0 or self.year >= self.max_years # Budget <= 0 impossible, but here in case of further improvements
-
+        # Get new state
         observation = self._get_obs()
-        reward = self.gaussian_reward(budget=self.budget, #(self.budget - budget_t)
+        # Compute reward by 1. scaling it and 2. applying a gaussian modifier
+        reward = self.scale_reward(reward)
+        reward = self.gaussian_reward(delta_budget=(self.budget - budget_t),
                                        year=self.year,
-                                       sigma=2)
+                                       sigma=self.sigma)
+        
         truncated = False
         info = {}
 
@@ -141,7 +152,7 @@ register(
     entry_point=lambda initial_budget, sheep_cost, wheat_cost,
                         wool_price, wheat_price,
                         max_years, wool_fixed_cost,
-                        storm_probability, incest_penalty:
+                        storm_probability, incest_penalty, reward_std:
                     FarmEnv(initial_budget,
                             sheep_cost,
                             wheat_cost,
@@ -150,6 +161,7 @@ register(
                             max_years,
                             wool_fixed_cost,
                             storm_probability,
-                            incest_penalty),
+                            incest_penalty,
+                            reward_std),
     max_episode_steps=31,
 )
