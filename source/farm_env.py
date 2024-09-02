@@ -2,7 +2,7 @@ import gymnasium as gym
 from gymnasium import spaces
 from gymnasium.envs.registration import register
 from typing import Literal
-import config
+import source.config as config
 import numpy as np
 import math
 
