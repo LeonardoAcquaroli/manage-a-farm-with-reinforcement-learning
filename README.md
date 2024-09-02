@@ -18,7 +18,7 @@ To get started with this project, follow these steps:
 ## Usage
 
 Run the `train.ipynb` notebook to train two different Reinforcement learning algorithms usign the Value Function Approximation approach (SARSA and Montecarlo) and the REINFORCE method with Advantage function (with linear functions or neural networks).
-Run the `inference.ipynb` to generate an episode with the best agent that is powered by the REINFORCE method with Advantage function (Neural networks).\\
+Run the `inference.ipynb` to generate an episode with the best agent that is powered by the REINFORCE method with Advantage function (Neural networks).
 
 In particular the simple architectures for the Policy and the Value functions are depicted below.
 <p float="left">
