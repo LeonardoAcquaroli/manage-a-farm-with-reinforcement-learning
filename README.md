@@ -18,6 +18,14 @@ To get started with this project, follow these steps:
 ## Usage
 
 Run the `train.ipynb` notebook to train two different Reinforcement learning algorithms usign the Value Function Approximation approach (SARSA and Montecarlo) and the REINFORCE method with Advantage function (with linear functions or neural networks).
+Run the `inference.ipynb` to generate an episode with the best agent that is powered by the REINFORCE method with Advantage function (Neural networks).\\
+
+In particular the simple architectures for the Policy and the Value functions are depicted below.
+<p float="left">
+  <img src="[URL_for_policy_function_image](https://raw.githubusercontent.com/LeonardoAcquaroli/manage-a-farm-with-reinforcement-learning/main/media/policy_network.svg)" width="45%" alt="Policy Function Architecture" />
+  <img src="[URL_for_value_function_image](https://raw.githubusercontent.com/LeonardoAcquaroli/manage-a-farm-with-reinforcement-learning/main/media/value_network.svg)" width="45%" alt="Value Function Architecture" />
+</p>
+
 
 # Text of the problem
 ### With my edits (in bold)
