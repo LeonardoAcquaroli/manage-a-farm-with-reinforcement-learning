@@ -20,11 +20,11 @@ To get started with this project, follow these steps:
 Run the notebook to train two different Reinforcement learning algorithms usign the Value Function Approximation approach, SARSA and Montecarlo.
 
 # Text of the problem
-### With my edits in bold
+### With my edits (in bold)
 You are the manager of a farm. You have an initial budget of 2000 €. Each year you have to take some decisions about how to invest you money, but you can do only one of the following things:
 1. Buy one sheep: a sheep costs 1000 €
 2. Growing wheat: when you choose this action, you spend 20 €
-3. Do not invest: you do not spend anything. 
+3. Do not invest: you do not spend anything (available only if the budget does not allow to grow wheat).
 
 At the end of the year, you harvest the wheat and you sell your wool. Each sheep produces 1 wool unit that is sold for 10 €. **Selling wool has a fixed cost of 9 €.** Selling the harvested wheat instead gives you 50 €.
 
