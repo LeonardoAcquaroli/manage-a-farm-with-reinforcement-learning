@@ -17,7 +17,7 @@ To get started with this project, follow these steps:
 
 ## Usage
 
-Run the notebook to train two different Reinforcement learning algorithms usign the Value Function Approximation approach, SARSA and Montecarlo.
+Run the `train.ipynb` notebook to train two different Reinforcement learning algorithms usign the Value Function Approximation approach (SARSA and Montecarlo) and the REINFORCE method with Advantage function (with linear functions or neural networks).
 
 # Text of the problem
 ### With my edits (in bold)
