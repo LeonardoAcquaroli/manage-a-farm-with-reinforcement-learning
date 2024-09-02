@@ -2,6 +2,7 @@ import gymnasium as gym
 from gymnasium import spaces
 from gymnasium.envs.registration import register
 from typing import Literal
+import config
 import numpy as np
 import math
 
@@ -76,7 +77,7 @@ class FarmEnv(gym.Env):
         return scaled_reward
     
     def gaussian_reward(self, reward: float, year: int, sigma: float = 9): # sigma could be a function of years too (maybe with some regulations params not to narrow down too much the shape after year 9)
-        gaussian_modifier = math.exp(-(year - 30)**2 / (2 * (sigma**2)))
+        gaussian_modifier = math.exp(-(year - config.MAX_YEARS)**2 / (2 * (sigma**2)))
         return reward * gaussian_modifier
 
     def reset(self, seed=None, options: dict = {}):
