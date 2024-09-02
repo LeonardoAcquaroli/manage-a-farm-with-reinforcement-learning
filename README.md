@@ -22,8 +22,8 @@ Run the `inference.ipynb` to generate an episode with the best agent that is pow
 
 In particular the simple architectures for the Policy and the Value functions are depicted below.
 <p float="left">
-  <img src="[URL_for_policy_function_image](https://raw.githubusercontent.com/LeonardoAcquaroli/manage-a-farm-with-reinforcement-learning/main/media/policy_network.svg)" width="45%" alt="Policy Function Architecture" />
-  <img src="[URL_for_value_function_image](https://raw.githubusercontent.com/LeonardoAcquaroli/manage-a-farm-with-reinforcement-learning/main/media/value_network.svg)" width="45%" alt="Value Function Architecture" />
+  <img src="https://github.com/LeonardoAcquaroli/manage-a-farm-with-reinforcement-learning/blob/main/media/policy_network.svg" width="45%" alt="Policy Function Architecture" />
+  <img src="https://github.com/LeonardoAcquaroli/manage-a-farm-with-reinforcement-learning/blob/main/media/value_network.svg" width="45%" alt="Value Function Architecture" />
 </p>
 
 
