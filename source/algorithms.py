@@ -281,7 +281,20 @@ class FarmAgentNeuralREINFORCEAdvantage:
     def __init__(self, environment, policy_learning_rate, value_learning_rate,
                  epsilon, epsilon_decay, final_epsilon, gamma=0.99,
                  policy_net_weights_path: str = None, value_net_weights_path: str = None):
-        
+        """
+        Initializes an agent powered by REINFORCE with (neural) Advantage function.
+        Parameters:
+        - environment: The environment object representing the farm simulation.
+        - policy_learning_rate: The learning rate for the policy network.
+        - value_learning_rate: The learning rate for the value network.
+        - epsilon: The exploration rate for the epsilon-greedy policy.
+        - epsilon_decay: The decay rate for the exploration rate.
+        - final_epsilon: The final exploration rate after decay.
+        - gamma: The discount factor for future rewards (default: 0.99).
+        - policy_net_weights_path: The file path to the pre-trained weights of the policy network (default: None).
+        - value_net_weights_path: The file path to the pre-trained weights of the value network (default: None).
+        """
+
         self.env = environment
         self.gamma = gamma
         self.epsilon = epsilon
@@ -329,6 +342,28 @@ class FarmAgentNeuralREINFORCEAdvantage:
         self.feature_count = 0
 
     def normalize_state(self, state):
+        """
+        Normalize the given state using a running mean and standard deviation.
+
+        Parameters:
+        - state (dict): The state to be normalized.
+
+        Returns:
+        - np.array: The normalized state as a numpy array.
+
+        This method normalizes the given state by subtracting the running mean and dividing by the running standard deviation.
+        The running mean and standard deviation are updated incrementally as new states are encountered.
+        The normalization is performed for each key in the state dictionary.
+        If the feature count is greater than 1, the normalized value is calculated using the running mean and standard deviation.
+        Otherwise, the original value is returned.
+
+        The running mean and standard deviation are used to normalize the state features in order to make them have zero mean and unit variance.
+        This helps in stabilizing the learning process and improving the convergence of the reinforcement learning algorithm.
+        By using a running mean and standard deviation, the normalization adapts to the changing distribution of the state features over time.
+        This is particularly useful in environments where the state features may have different ranges or distributions.
+        Instead of using a fixed mean and standard deviation, the running mean and standard deviation allow the agent to adapt to different environments and generalize better.
+        """
+        
         self.feature_count += 1
         normalized_state = {}
         for k in self.state_keys:
@@ -358,6 +393,31 @@ class FarmAgentNeuralREINFORCEAdvantage:
             return np.random.choice(options)
 
     def update(self, episode_number, max_iterations=30):
+        """
+        Updates the policy and value function networks based on the generated episode.
+        Parameters:
+        - episode_number (int): The current episode number.
+        - max_iterations (int, optional): The maximum number of iterations for generating an episode. Defaults to 30.
+        Returns:
+        None
+        Raises:
+        None
+        Notes:
+        - This method assumes that the policy and value networks have already been initialized.
+        - The episode is generated using the `generate_episode` method.
+        - The states, actions, and rewards are extracted from the episode.
+        - The states are normalized using the `normalize_state` method.
+        - The returns are computed using the `compute_returns` method.
+        - The value estimates are computed using the value network.
+        - The advantages are computed by subtracting the values from the returns and normalizing them.
+        - The policy is updated by computing the action probabilities, selecting the probabilities of the chosen actions,
+          and calculating the policy loss using the advantages.
+        - The policy network parameters are updated using the policy optimizer and gradient clipping.
+        - The value function is updated by calculating the value loss using the values and returns.
+        - The value network parameters are updated using the value optimizer and gradient clipping.
+        - The learning rate schedulers for the policy and value optimizers are stepped.
+        - If any NaN values are detected in the policy or value network weights, the weights are reset.
+        """
         episode = self.generate_episode(max_iterations)
         states, actions, rewards = zip(*episode)
         
