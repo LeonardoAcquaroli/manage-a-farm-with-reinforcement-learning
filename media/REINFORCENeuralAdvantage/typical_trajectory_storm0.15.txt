@@ -1,0 +1,32 @@
+Action: 0 State: {'budget': 2, 'sheep_count': 0, 'bought_sheep_count': 0, 'sheep_reproduction_probability': 0.001641124840903045, 'year': 0} Reward: -0.0 Terminated: False False {}
+Action: 0 State: {'budget': 1.001, 'sheep_count': 1, 'bought_sheep_count': 1, 'sheep_reproduction_probability': 0.001641124840903045, 'year': 1} Reward: -0.0 Terminated: False False {}
+Action: 2 State: {'budget': 0.011999999999999891, 'sheep_count': 3, 'bought_sheep_count': 2, 'sheep_reproduction_probability': 1.0, 'year': 2} Reward: 0.0 Terminated: False False {}
+Action: 1 State: {'budget': 0.03299999999999989, 'sheep_count': 3, 'bought_sheep_count': 2, 'sheep_reproduction_probability': 0.3628873693012115, 'year': 3} Reward: 0.0 Terminated: False False {}
+Action: 1 State: {'budget': 0.0839999999999999, 'sheep_count': 4, 'bought_sheep_count': 2, 'sheep_reproduction_probability': 0.3628873693012115, 'year': 4} Reward: 0.0 Terminated: False False {}
+Action: 1 State: {'budget': 0.1449999999999999, 'sheep_count': 5, 'bought_sheep_count': 2, 'sheep_reproduction_probability': 0.1767766952966369, 'year': 5} Reward: 0.0 Terminated: False False {}
+Action: 1 State: {'budget': 0.1659999999999999, 'sheep_count': 6, 'bought_sheep_count': 2, 'sheep_reproduction_probability': 0.10119288512538815, 'year': 6} Reward: 0.0 Terminated: False False {}
+Action: 1 State: {'budget': 0.24699999999999991, 'sheep_count': 9, 'bought_sheep_count': 2, 'sheep_reproduction_probability': 0.06415002990995841, 'year': 7} Reward: 0.0 Terminated: False False {}
+Action: 1 State: {'budget': 0.30799999999999994, 'sheep_count': 10, 'bought_sheep_count': 2, 'sheep_reproduction_probability': 0.023279235594618846, 'year': 8} Reward: 0.0 Terminated: False False {}
+Action: 1 State: {'budget': 0.37899999999999995, 'sheep_count': 10, 'bought_sheep_count': 2, 'sheep_reproduction_probability': 0.01788854381999832, 'year': 9} Reward: 0.0 Terminated: False False {}
+Action: 1 State: {'budget': 0.49999999999999994, 'sheep_count': 11, 'bought_sheep_count': 2, 'sheep_reproduction_probability': 0.01788854381999832, 'year': 10} Reward: 0.001 Terminated: False False {}
+Action: 1 State: {'budget': 0.631, 'sheep_count': 12, 'bought_sheep_count': 2, 'sheep_reproduction_probability': 0.014095915130949451, 'year': 11} Reward: 0.002 Terminated: False False {}
+Action: 1 State: {'budget': 0.772, 'sheep_count': 13, 'bought_sheep_count': 2, 'sheep_reproduction_probability': 0.01134023029066286, 'year': 12} Reward: 0.003 Terminated: False False {}
+Action: 1 State: {'budget': 0.923, 'sheep_count': 14, 'bought_sheep_count': 2, 'sheep_reproduction_probability': 0.009283604030209896, 'year': 13} Reward: 0.005 Terminated: False False {}
+Action: 0 State: {'budget': 1.084, 'sheep_count': 17, 'bought_sheep_count': 2, 'sheep_reproduction_probability': 0.007713560673657698, 'year': 14} Reward: -0.036 Terminated: False False {}
+Action: 1 State: {'budget': 0.25500000000000006, 'sheep_count': 18, 'bought_sheep_count': 3, 'sheep_reproduction_probability': 0.01134023029066286, 'year': 15} Reward: 0.013 Terminated: False False {}
+Action: 1 State: {'budget': 0.45600000000000007, 'sheep_count': 19, 'bought_sheep_count': 3, 'sheep_reproduction_probability': 0.01134023029066286, 'year': 16} Reward: 0.02 Terminated: False False {}
+Action: 1 State: {'budget': 0.667, 'sheep_count': 22, 'bought_sheep_count': 3, 'sheep_reproduction_probability': 0.009906474692730243, 'year': 17} Reward: 0.033 Terminated: False False {}
+Action: 1 State: {'budget': 0.908, 'sheep_count': 24, 'bought_sheep_count': 3, 'sheep_reproduction_probability': 0.006866674083557817, 'year': 18} Reward: 0.049 Terminated: False False {}
+Action: 0 State: {'budget': 1.169, 'sheep_count': 25, 'bought_sheep_count': 3, 'sheep_reproduction_probability': 0.005524271728019903, 'year': 19} Reward: -0.187 Terminated: False False {}
+Action: 1 State: {'budget': 0.42000000000000004, 'sheep_count': 29, 'bought_sheep_count': 4, 'sheep_reproduction_probability': 0.009283604030209896, 'year': 20} Reward: 0.101 Terminated: False False {}
+Action: 1 State: {'budget': 0.731, 'sheep_count': 29, 'bought_sheep_count': 4, 'sheep_reproduction_probability': 0.007065696577485921, 'year': 21} Reward: 0.128 Terminated: False False {}
+Action: 0 State: {'budget': 1.0419999999999998, 'sheep_count': 34, 'bought_sheep_count': 4, 'sheep_reproduction_probability': 0.007065696577485921, 'year': 22} Reward: -0.334 Terminated: False False {}
+Action: 1 State: {'budget': 0.38299999999999984, 'sheep_count': 41, 'bought_sheep_count': 5, 'sheep_reproduction_probability': 0.007713560673657698, 'year': 23} Reward: 0.231 Terminated: False False {}
+Action: 1 State: {'budget': 0.7639999999999998, 'sheep_count': 46, 'bought_sheep_count': 5, 'sheep_reproduction_probability': 0.005193562580083121, 'year': 24} Reward: 0.34 Terminated: False False {}
+Action: 1 State: {'budget': 1.2449999999999997, 'sheep_count': 47, 'bought_sheep_count': 5, 'sheep_reproduction_probability': 0.0038952060101357924, 'year': 25} Reward: 0.394 Terminated: False False {}
+Action: 1 State: {'budget': 1.7359999999999998, 'sheep_count': 51, 'bought_sheep_count': 5, 'sheep_reproduction_probability': 0.0036913086976767895, 'year': 26} Reward: 0.469 Terminated: False False {}
+Action: 1 State: {'budget': 2.267, 'sheep_count': 57, 'bought_sheep_count': 5, 'sheep_reproduction_probability': 0.0030095361932196726, 'year': 27} Reward: 0.512 Terminated: False False {}
+Action: 1 State: {'budget': 2.808, 'sheep_count': 60, 'bought_sheep_count': 5, 'sheep_reproduction_probability': 0.0022789661348072187, 'year': 28} Reward: 0.564 Terminated: False False {}
+Action: 1 State: {'budget': 3.3789999999999996, 'sheep_count': 69, 'bought_sheep_count': 5, 'sheep_reproduction_probability': 0.0020046884346862004, 'year': 29} Reward: 0.712 Terminated: True False {}
+Final state: {'budget': 4.09, 'sheep_count': 71, 'bought_sheep_count': 5, 'sheep_reproduction_probability': 0.0014135210619044465, 'year': 30}
+============End of episode============

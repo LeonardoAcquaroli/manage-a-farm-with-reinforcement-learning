@@ -1,0 +1,32 @@
+Action: 0 State: {'budget': 2, 'sheep_count': 0, 'bought_sheep_count': 0, 'sheep_reproduction_probability': 0.0029729686974630546, 'year': 0} Reward: -0.0 Terminated: False False {}
+Action: 0 State: {'budget': 1.001, 'sheep_count': 1, 'bought_sheep_count': 1, 'sheep_reproduction_probability': 0.0029729686974630546, 'year': 1} Reward: -0.0 Terminated: False False {}
+Action: 2 State: {'budget': 0.011999999999999891, 'sheep_count': 3, 'bought_sheep_count': 2, 'sheep_reproduction_probability': 1.0, 'year': 2} Reward: 0.0 Terminated: False False {}
+Action: 1 State: {'budget': 0.03299999999999989, 'sheep_count': 4, 'bought_sheep_count': 2, 'sheep_reproduction_probability': 0.3628873693012115, 'year': 3} Reward: 0.0 Terminated: False False {}
+Action: 1 State: {'budget': 0.09399999999999989, 'sheep_count': 5, 'bought_sheep_count': 2, 'sheep_reproduction_probability': 0.1767766952966369, 'year': 4} Reward: 0.0 Terminated: False False {}
+Action: 1 State: {'budget': 0.11499999999999988, 'sheep_count': 5, 'bought_sheep_count': 2, 'sheep_reproduction_probability': 0.10119288512538815, 'year': 5} Reward: 0.0 Terminated: False False {}
+Action: 1 State: {'budget': 0.1859999999999999, 'sheep_count': 6, 'bought_sheep_count': 2, 'sheep_reproduction_probability': 0.10119288512538815, 'year': 6} Reward: 0.0 Terminated: False False {}
+Action: 1 State: {'budget': 0.2669999999999999, 'sheep_count': 7, 'bought_sheep_count': 2, 'sheep_reproduction_probability': 0.06415002990995841, 'year': 7} Reward: 0.0 Terminated: False False {}
+Action: 1 State: {'budget': 0.35799999999999993, 'sheep_count': 8, 'bought_sheep_count': 2, 'sheep_reproduction_probability': 0.043634488475497855, 'year': 8} Reward: 0.0 Terminated: False False {}
+Action: 1 State: {'budget': 0.4589999999999999, 'sheep_count': 9, 'bought_sheep_count': 2, 'sheep_reproduction_probability': 0.03125, 'year': 9} Reward: 0.0 Terminated: False False {}
+Action: 1 State: {'budget': 0.5199999999999999, 'sheep_count': 9, 'bought_sheep_count': 2, 'sheep_reproduction_probability': 0.023279235594618846, 'year': 10} Reward: 0.0 Terminated: False False {}
+Action: 1 State: {'budget': 0.5809999999999998, 'sheep_count': 12, 'bought_sheep_count': 2, 'sheep_reproduction_probability': 0.023279235594618846, 'year': 11} Reward: 0.002 Terminated: False False {}
+Action: 1 State: {'budget': 0.7219999999999999, 'sheep_count': 13, 'bought_sheep_count': 2, 'sheep_reproduction_probability': 0.01134023029066286, 'year': 12} Reward: 0.002 Terminated: False False {}
+Action: 1 State: {'budget': 0.8229999999999998, 'sheep_count': 14, 'bought_sheep_count': 2, 'sheep_reproduction_probability': 0.009283604030209896, 'year': 13} Reward: 0.003 Terminated: False False {}
+Action: 1 State: {'budget': 0.9339999999999998, 'sheep_count': 15, 'bought_sheep_count': 2, 'sheep_reproduction_probability': 0.007713560673657698, 'year': 14} Reward: 0.005 Terminated: False False {}
+Action: 0 State: {'budget': 1.0549999999999997, 'sheep_count': 15, 'bought_sheep_count': 2, 'sheep_reproduction_probability': 0.006491526607468635, 'year': 15} Reward: -0.056 Terminated: False False {}
+Action: 1 State: {'budget': 0.2059999999999997, 'sheep_count': 17, 'bought_sheep_count': 3, 'sheep_reproduction_probability': 0.015223102800898336, 'year': 16} Reward: 0.013 Terminated: False False {}
+Action: 1 State: {'budget': 0.34699999999999975, 'sheep_count': 20, 'bought_sheep_count': 3, 'sheep_reproduction_probability': 0.013082201477078295, 'year': 17} Reward: 0.023 Terminated: False False {}
+Action: 1 State: {'budget': 0.5179999999999998, 'sheep_count': 22, 'bought_sheep_count': 3, 'sheep_reproduction_probability': 0.008714212528966687, 'year': 18} Reward: 0.036 Terminated: False False {}
+Action: 1 State: {'budget': 0.7089999999999997, 'sheep_count': 24, 'bought_sheep_count': 3, 'sheep_reproduction_probability': 0.006866674083557817, 'year': 19} Reward: 0.053 Terminated: False False {}
+Action: 1 State: {'budget': 0.9199999999999997, 'sheep_count': 26, 'bought_sheep_count': 3, 'sheep_reproduction_probability': 0.005524271728019903, 'year': 20} Reward: 0.091 Terminated: False False {}
+Action: 0 State: {'budget': 1.2009999999999996, 'sheep_count': 26, 'bought_sheep_count': 3, 'sheep_reproduction_probability': 0.004522408272471019, 'year': 21} Reward: -0.304 Terminated: False False {}
+Action: 1 State: {'budget': 0.46199999999999963, 'sheep_count': 28, 'bought_sheep_count': 4, 'sheep_reproduction_probability': 0.008447740564274359, 'year': 22} Reward: 0.153 Terminated: False False {}
+Action: 1 State: {'budget': 0.7629999999999997, 'sheep_count': 29, 'bought_sheep_count': 4, 'sheep_reproduction_probability': 0.007713560673657698, 'year': 23} Reward: 0.189 Terminated: False False {}
+Action: 0 State: {'budget': 1.0739999999999996, 'sheep_count': 32, 'bought_sheep_count': 4, 'sheep_reproduction_probability': 0.007065696577485921, 'year': 24} Reward: -0.48 Terminated: False False {}
+Action: 1 State: {'budget': 0.39499999999999963, 'sheep_count': 36, 'bought_sheep_count': 5, 'sheep_reproduction_probability': 0.008935938293865048, 'year': 25} Reward: 0.305 Terminated: False False {}
+Action: 1 State: {'budget': 0.7759999999999996, 'sheep_count': 40, 'bought_sheep_count': 5, 'sheep_reproduction_probability': 0.007189004557290992, 'year': 26} Reward: 0.372 Terminated: False False {}
+Action: 0 State: {'budget': 1.1969999999999996, 'sheep_count': 45, 'bought_sheep_count': 5, 'sheep_reproduction_probability': 0.005524271728019903, 'year': 27} Reward: -0.52 Terminated: False False {}
+Action: 1 State: {'budget': 0.6479999999999997, 'sheep_count': 51, 'bought_sheep_count': 6, 'sheep_reproduction_probability': 0.0061444575298974825, 'year': 28} Reward: 0.475 Terminated: False False {}
+Action: 0 State: {'budget': 1.1289999999999996, 'sheep_count': 53, 'bought_sheep_count': 6, 'sheep_reproduction_probability': 0.004747365678685366, 'year': 29} Reward: -0.469 Terminated: True False {}
+Final state: {'budget': 0.6599999999999996, 'sheep_count': 64, 'bought_sheep_count': 7, 'sheep_reproduction_probability': 0.006050074192615171, 'year': 30}
+============End of episode============
